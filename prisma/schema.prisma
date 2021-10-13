@@ -2,10 +2,26 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  shadowDatabaseUrl    = env("SHADOW_DATABASE_URL")
+  referentialIntegrity = "prisma"
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+model Post {
+	id            BigInt      @id @default(autoincrement())
+	created_by    DateTime    @default(now())
+	updated_by    DateTime    @updatedAt
+	title         String      @db.VarChar(255)
+	content       String?
+}
+
+model User {
+	name  String @id
+	password String
 }
