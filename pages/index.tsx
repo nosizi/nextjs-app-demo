@@ -9,7 +9,11 @@ async function getPosts() {
   return result.data
 }
 
-async function addPost({ title, body }) {
+type Post = {
+  title: string,
+  body: string,
+}
+async function addPost({ title, body }: Post) {
   await axios.post('https://jsonplaceholder.typicode.com/posts', {
     title,
     body,
@@ -17,7 +21,7 @@ async function addPost({ title, body }) {
 }
 
 const Home: NextPage = () => {
-  const getPostsQuery = useQuery('getPosts', getPosts)
+  const { isLoading, error, data } = useQuery('getPosts', getPosts)
 
   const addPostMutation = useMutation(addPost)
 
@@ -31,9 +35,9 @@ const Home: NextPage = () => {
 
   return (
     <div className={styles.container}>
-      {getPostsQuery.isLoading && <div>Loading....</div>}
-      {getPostsQuery.error && <div>Something error</div>}
-      {getPostsQuery.data?.map(post => {
+      {isLoading && <div>Loading....</div>}
+      {error && <div>Something error</div>}
+      {data?.map((post: any) => {
         return (
           <div key={post.id}>
             {post.title}
